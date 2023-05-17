@@ -30,7 +30,7 @@ import styles from './index.styl';
 import { LARGE, MEDIUM, SMALL, XSMALL } from './sizings';
 
 
-const ToolModal = ({ onClose, title, style, className, size, children, disableOverlayClick = false, ...rest }) => {
+const ToolModal = ({ onClose, title, style, className, contentClass, size, children, disableOverlayClick = false, ...rest }) => {
     let sizingStyles;
 
     switch (size?.toLowerCase()) {
@@ -71,7 +71,7 @@ const ToolModal = ({ onClose, title, style, className, size, children, disableOv
                 <div className={styles.header}>
                     <h5 className={styles.headerText}>{title}</h5>
                 </div>
-                <div className={styles.container}>
+                <div className={[styles.container, contentClass].join(' ')}>
                     {children}
                 </div>
             </div>

@@ -8,8 +8,10 @@ import Widget from 'app/components/Widget';
 import controller from 'app/lib/controller';
 import store from 'app/store';
 import { WORKSPACE_MODE, METRIC_UNITS } from 'app/constants';
+import { RotaryProvider } from './RotaryContext';
 
 import styles from './index.styl';
+import PhysicalUnitSetup from './PhysicalUnitSetup';
 import RotaryToggle from './RotaryToggle';
 import DROarea from './DROarea';
 import JogControlArea from './JogControlArea';
@@ -28,6 +30,7 @@ const Rotary = ({ active }) => {
     });
     const [, setIsContinuousJogging] = useState(false);
     const { state: controllerState, type: controllerType } = useSelector(state => state.controller);
+    const [showUnitSetup, setShowUnitSetup] = useState(false);
 
 
     const { ROTARY } = WORKSPACE_MODE;
@@ -120,27 +123,30 @@ const Rotary = ({ active }) => {
                     styles.heightOverride,
                 )}
             >
-                <div className={styles['rotary-axis-wrapper']}>
-                    <div className={styles['rotary-jog-control-area']}>
-                        <p className={styles['rotary-tab-section-title']}>
-                            Jog Control
-                        </p>
-                        <DROarea actions={actions} canClick={enableRotaryAxis && !isFileRunning()} />
-                        <JogControlArea
-                            selectedSpeed={speedPreset} actions={actions} jog={jog}
-                            disabled={!enableRotaryAxis || isFileRunning()}
-                        />
-                        <SpeedPresets selectedSpeed={speedPreset} actions={actions} />
-                        <SpeedControls jog={jog} actions={actions} />
-                    </div>
+                <RotaryProvider value={{ showUnitSetup, setShowUnitSetup }}>
+                    <PhysicalUnitSetup />
+                    <div className={styles['rotary-axis-wrapper']}>
+                        <div className={styles['rotary-jog-control-area']}>
+                            <p className={styles['rotary-tab-section-title']}>
+                                Jog Control
+                            </p>
+                            <DROarea actions={actions} canClick={enableRotaryAxis && !isFileRunning()} />
+                            <JogControlArea
+                                selectedSpeed={speedPreset} actions={actions} jog={jog}
+                                disabled={!enableRotaryAxis || isFileRunning()}
+                            />
+                            <SpeedPresets selectedSpeed={speedPreset} actions={actions} />
+                            <SpeedControls jog={jog} actions={actions} />
+                        </div>
 
-                    <div className={styles['rotary-tools-area']}>
-                        <p className={styles['rotary-tab-section-title']}>Tools</p>
-                        <RotaryToggle />
-                        {/* <StockDiameter /> */}
-                        <ActionArea />
+                        <div className={styles['rotary-tools-area']}>
+                            <p className={styles['rotary-tab-section-title']}>Tools</p>
+                            <RotaryToggle />
+                            {/* <StockDiameter /> */}
+                            <ActionArea />
+                        </div>
                     </div>
-                </div>
+                </RotaryProvider>
             </Widget.Content>
         </Widget>
     );
