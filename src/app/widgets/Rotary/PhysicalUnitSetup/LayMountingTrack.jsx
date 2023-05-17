@@ -32,12 +32,16 @@ const RadioWrapper = styled.div`
   font-weight: 800;
 `;
 
-const LayMountingTrack = (setupSettings, setSetupSettings) => {
-    const { mountingTrackLinesUp } = setupSettings;
+const LayMountingTrack = ({ setupState, setSetupState }) => {
+    const { mountingTrackLinesUp } = setupState;
+    const handleRadioChange = (value, event) => {
+        setSetupState((prev) => ({ ...prev, mountingTrackLinesUp: value }));
+    };
+
     return (
         <LayTrackWrapper>
             <Heading>
-                Mounting Track Layout
+                Mounting Track Layout Marking
             </Heading>
             <ImageWrapper>
                 <Img src={sampleImg} />
@@ -50,10 +54,10 @@ const LayMountingTrack = (setupSettings, setSetupSettings) => {
             <RadioWrapper>
                 Do the mounting slots line up without any interference?
                 <RadioGroup
+                    name="slots"
                     value={mountingTrackLinesUp}
-                    defaultValue={true}
                     depth={2}
-                    onChange={(value, event) => setSetupSettings((prev) => ({ ...prev, mountingTrackLinesUp: value }))}
+                    onChange={handleRadioChange}
                     size="small"
                 >
                     <div className={styles.radio}>
