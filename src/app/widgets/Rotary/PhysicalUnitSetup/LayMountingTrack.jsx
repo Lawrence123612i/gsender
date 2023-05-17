@@ -10,7 +10,7 @@ const LayTrackWrapper = styled.div`
   padding: 2rem;
 `;
 
-const Content = styled.div``;
+const Description = styled.div``;
 
 const Heading = styled.div`
   font-size: 1.5rem;
@@ -42,11 +42,11 @@ const LayMountingTrack = (setupSettings, setSetupSettings) => {
             <ImageWrapper>
                 <Img src={sampleImg} />
             </ImageWrapper>
-            <Content>
+            <Description>
                 Please lay your Rotary Axis mounting track on the wasteboard and line up the mounting slots.
                 Please make sure there is no interference with the T-tracks, inserts or any other component or wiring of the machine.
                 Use a marker to leave a small pen mark on the first (front left) hole spot.
-            </Content>
+            </Description>
             <RadioWrapper>
                 Do the mounting slots line up without any interference?
                 <RadioGroup

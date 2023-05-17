@@ -7,6 +7,7 @@ import RotaryContext from '../RotaryContext';
 import LayMountingTrack from './LayMountingTrack';
 import styles from './index.styl';
 import RemoveMountingTrack from './RemoveMountingTrack';
+import ZeroZAxis from './ZeroZAxis';
 
 /**
  * @component PhysicalUnitSetup
@@ -50,8 +51,8 @@ const PhysicalUnitSetup = () => {
             label: 'Step 3',
             subtitle: '100%',
             name: 'step 3',
-            content: <div> content goes here </div>,
-            // validator: () => {}
+            content: <ZeroZAxis />,
+            // validator: () => {} Check if Z MPOS = 0
         }
     ];
     return (

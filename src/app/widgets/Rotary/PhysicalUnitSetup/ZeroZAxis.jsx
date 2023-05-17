@@ -1,8 +1,8 @@
-import styled from '@emotion/styled';
 import React from 'react';
+import styled from '@emotion/styled';
 import sampleImg from '../assets/sample.png';
 
-const RemoveTrackWrapper = styled.div`
+const ZeroZAxisWrapper = styled.div`
   height: 100%;
   background: white;
   padding: 2rem;
@@ -25,19 +25,21 @@ const Img = styled.img`
   padding: 1rem;
 `;
 
-export default function RemoveMountingTrack() {
+export default function ZeroZAxis() {
     return (
-        <RemoveTrackWrapper>
+        <ZeroZAxisWrapper>
             <Heading>
-                Remove Mounting Track
+                Zero Z Axis
             </Heading>
             <ImageWrapper>
                 <Img src={sampleImg} />
             </ImageWrapper>
             <Description>
-                Please remove the rotary axis mounting track from the wasteboard.
-                Once done, click &#39;Next&#39; to proceed to drill mounting holes on the marked locations from Step 1.
+                We will now be setting the Z axis to zero(0) at the marked position from Step 1.
+                This will give a starting position for the machine to drill all the mounting holes.<br /><br />
+                You can zero the Z-axis onto the wasteboard surface here by whichever means best works for you,
+                such as using a touchplate, &#39;paper method&#39; or even eyeballing.
             </Description>
-        </RemoveTrackWrapper>
+        </ZeroZAxisWrapper>
     );
 }
