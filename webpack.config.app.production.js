@@ -248,7 +248,7 @@ module.exports = {
             path.resolve(__dirname, 'src'),
             'node_modules'
         ],
-        extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
+        extensions: ['.js', '.jsx', '.json'],
         alias: {
             // Alias paths so that e.g. "../../components/File" becomes "Components/File"
             Actions: path.resolve(__dirname, './src/app/actions'),
