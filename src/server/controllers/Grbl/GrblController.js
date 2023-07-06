@@ -443,11 +443,13 @@ class GrblController {
 
                         setTimeout(() => {
                             // Emit the current state so latest tool info is available
-                            this.emit('controller:state', GRBL, this.state);
+                            this.runner.setTool(tool[2]); // set tool in runner state
+                            this.emit('controller:state', GRBL, this.state, tool[2]); // set tool in redux
                             this.emit('gcode:toolChange', {
                                 line: sent + 1,
                                 count,
                                 block: line,
+                                tool: tool,
                                 option: toolChangeOption
                             }, commentString);
                         }, 500);
@@ -1579,18 +1581,17 @@ class GrblController {
                 const [feedOV] = this.state.status.ov;
 
                 let diff = value - feedOV;
-                //Limits for keyboard/gamepad shortcuts
-                if (value < 4) {
-                    diff = 4 - feedOV;
-                } else if (value > 230) {
-                    diff = 230 - feedOV;
-                }
-
 
                 if (value === 100) {
-                    this.write('\x90');
+                    this.write(String.fromCharCode(0x90));
                 } else {
-                    calcOverrides(this, diff, 'feed');
+                    const queue = calcOverrides(diff, 'feed');
+                    queue.forEach((command, index) => {
+                        setTimeout(() => {
+                            this.connection.writeImmediate(command);
+                            this.connection.writeImmediate('?');
+                        }, 50 * (index + 1));
+                    });
                 }
             },
             // Spindle Speed Overrides
@@ -1608,9 +1609,15 @@ class GrblController {
                 }
 
                 if (value === 100) {
-                    this.write('\x99');
+                    this.write(String.fromCharCode(0x99));
                 } else {
-                    calcOverrides(this, diff, 'spindle');
+                    const queue = calcOverrides(diff, 'spindle');
+                    queue.forEach((command, index) => {
+                        setTimeout(() => {
+                            this.connection.writeImmediate(command);
+                            this.connection.writeImmediate('?');
+                        }, 50 * (index + 1));
+                    });
                 }
             },
             // Rapid Overrides
@@ -1887,15 +1894,6 @@ class GrblController {
             'toolchange:context': () => {
                 const [context] = args;
                 this.toolChangeContext = context;
-            },
-            'toolchange:pre': () => {
-                log.debug('Starting pre hook');
-                this.runPreChangeHook();
-            },
-            'toolchange:post': () => {
-                log.debug('starting post hook');
-                this.command('feeder:start');
-                this.runPostChangeHook();
             },
             'wizard:start': () => {
                 log.debug('Wizard kickoff code');

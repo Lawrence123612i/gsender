@@ -86,7 +86,7 @@ for:
       - sudo dpkg --add-architecture armhf
       - sudo dpkg --add-architecture i386
       - sudo dpkg --print-foreign-architectures
-      - sudo apt-get update
+      - sudo apt-get update --allow-releaseinfo-change
       - sudo apt-get install --no-install-recommends -y icnsutils graphicsmagick gcc-multilib g++-multilib rpm
       - nvm install $nodejs_version
       - npm config set loglevel warn

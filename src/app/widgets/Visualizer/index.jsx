@@ -72,7 +72,6 @@ import {
     GRBL_ACTIVE_STATE_CHECK,
     CARVING_CATEGORY,
     GENERAL_CATEGORY,
-    OVERRIDES_CATEGORY,
     VISUALIZER_CATEGORY,
 } from '../../constants';
 import {
@@ -566,7 +565,8 @@ class VisualizerWidget extends PureComponent {
             }
         },
         handleLiteModeToggle: () => {
-            const { liteMode, gcode } = this.state;
+            const { liteMode } = this.state;
+            const { isFileLoaded } = this.props;
             const newLiteModeValue = !liteMode;
 
             this.setState({
@@ -577,7 +577,7 @@ class VisualizerWidget extends PureComponent {
             // instead of calling loadGCode right away,
             // use this pubsub to invoke a refresh of the visualizer wrapper.
             // this removes visual glitches that would otherwise appear.
-            pubsub.publish('litemode:change', gcode);
+            pubsub.publish('litemode:change', isFileLoaded);
         },
         lineWarning: {
             onContinue: () => {
@@ -616,7 +616,7 @@ class VisualizerWidget extends PureComponent {
             pubsub.publish('gcode:fileInfo');
             pubsub.publish('gcode:unload');
             Toaster.pop({
-                msg: 'Gcode File Closed',
+                msg: 'G-code File Closed',
                 icon: 'fa-exclamation'
             });
         }
@@ -837,48 +837,6 @@ class VisualizerWidget extends PureComponent {
     }
 
     shuttleControlFunctions = {
-        FEEDRATE_OVERRIDE: (_, { amount }) => {
-            switch (Number(amount)) {
-            case 1:
-                controller.write('\x93');
-                break;
-            case -1:
-                controller.write('\x94');
-                break;
-            case 10:
-                controller.write('\x91');
-                break;
-            case -10:
-                controller.write('\x92');
-                break;
-            case 0:
-                controller.write('\x90');
-                break;
-            default:
-                return;
-            }
-        },
-        SPINDLE_OVERRIDE: (_, { amount }) => {
-            switch (Number(amount)) {
-            case 1:
-                controller.write('\x9C');
-                break;
-            case -1:
-                controller.write('\x9D');
-                break;
-            case 10:
-                controller.write('\x9A');
-                break;
-            case -10:
-                controller.write('\x9B');
-                break;
-            case 0:
-                controller.write('\x99');
-                break;
-            default:
-                return;
-            }
-        },
         VISUALIZER_VIEW: (_, { type }) => {
             const {
                 to3DView,
@@ -997,6 +955,19 @@ class VisualizerWidget extends PureComponent {
                 controller.command('gcode:test');
             },
         },
+        RUN_OUTLINE: {
+            title: 'Run Outline',
+            keys: '',
+            cmd: 'RUN_OUTLINE',
+            preventDefault: false,
+            isActive: true,
+            category: CARVING_CATEGORY,
+            callback: () => {
+                if (this.workflowControl) {
+                    this.workflowControl.runOutline();
+                }
+            },
+        },
         START_JOB: {
             title: 'Start Job',
             keys: '~',
@@ -1039,126 +1010,6 @@ class VisualizerWidget extends PureComponent {
                     this.workflowControl.handleOnStop();
                 }
             },
-        },
-        FEEDRATE_OVERRIDE_P: {
-            title: 'Feed +',
-            keys: '',
-            gamepadKeys: '5',
-            keysName: 'R1',
-            cmd: 'FEEDRATE_OVERRIDE_P',
-            payload: { amount: 1 },
-            preventDefault: true,
-            isActive: true,
-            category: OVERRIDES_CATEGORY,
-            callback: this.shuttleControlFunctions.FEEDRATE_OVERRIDE,
-        },
-        FEEDRATE_OVERRIDE_PP: {
-            title: 'Feed ++',
-            keys: '',
-            gamepadKeys: '',
-            keysName: 'Feed ++',
-            cmd: 'FEEDRATE_OVERRIDE_PP',
-            payload: { amount: 10 },
-            preventDefault: true,
-            isActive: true,
-            category: OVERRIDES_CATEGORY,
-            callback: this.shuttleControlFunctions.FEEDRATE_OVERRIDE,
-        },
-        FEEDRATE_OVERRIDE_M: {
-            title: 'Feed -',
-            keys: '',
-            gamepadKeys: '7',
-            keysName: 'R2',
-            cmd: 'FEEDRATE_OVERRIDE_M',
-            payload: { amount: -1 },
-            preventDefault: true,
-            isActive: true,
-            category: OVERRIDES_CATEGORY,
-            callback: this.shuttleControlFunctions.FEEDRATE_OVERRIDE,
-        },
-        FEEDRATE_OVERRIDE_MM: {
-            title: 'Feed --',
-            keys: '',
-            gamepadKeys: '',
-            keysName: 'Feed --',
-            cmd: 'FEEDRATE_OVERRIDE_MM',
-            payload: { amount: -10 },
-            preventDefault: true,
-            isActive: true,
-            category: OVERRIDES_CATEGORY,
-            callback: this.shuttleControlFunctions.FEEDRATE_OVERRIDE,
-        },
-        FEEDRATE_OVERRIDE_RESET: {
-            title: 'Feed Reset',
-            keys: '',
-            gamepadKeys: '',
-            keysName: 'Feed Reset',
-            cmd: 'FEEDRATE_OVERRIDE_RESET',
-            payload: { amount: 0 },
-            preventDefault: true,
-            isActive: true,
-            category: OVERRIDES_CATEGORY,
-            callback: this.shuttleControlFunctions.FEEDRATE_OVERRIDE,
-        },
-        SPINDLE_OVERRIDE_P: {
-            title: 'Spindle/Laser +',
-            keys: '',
-            gamepadKeys: '4',
-            keysName: 'L1',
-            cmd: 'SPINDLE_OVERRIDE_P',
-            payload: { amount: 1 },
-            preventDefault: true,
-            isActive: true,
-            category: OVERRIDES_CATEGORY,
-            callback: this.shuttleControlFunctions.SPINDLE_OVERRIDE
-        },
-        SPINDLE_OVERRIDE_PP: {
-            title: 'Spindle/Laser ++',
-            keys: '',
-            gamepadKeys: '',
-            keysName: 'Spindle/Laser ++',
-            cmd: 'SPINDLE_OVERRIDE_PP',
-            payload: { amount: 10 },
-            preventDefault: true,
-            isActive: true,
-            category: OVERRIDES_CATEGORY,
-            callback: this.shuttleControlFunctions.SPINDLE_OVERRIDE
-        },
-        SPINDLE_OVERRIDE_M: {
-            title: 'Spindle/Laser -',
-            keys: '',
-            gamepadKeys: '6',
-            keysName: 'L2',
-            cmd: 'SPINDLE_OVERRIDE_M',
-            payload: { amount: -1 },
-            preventDefault: true,
-            isActive: true,
-            category: OVERRIDES_CATEGORY,
-            callback: this.shuttleControlFunctions.SPINDLE_OVERRIDE
-        },
-        SPINDLE_OVERRIDE_MM: {
-            title: 'Spindle/Laser --',
-            keys: '',
-            gamepadKeys: '',
-            keysName: 'Spindle/Laser --',
-            cmd: 'SPINDLE_OVERRIDE_MM',
-            payload: { amount: -10 },
-            preventDefault: true,
-            isActive: true,
-            category: OVERRIDES_CATEGORY,
-            callback: this.shuttleControlFunctions.SPINDLE_OVERRIDE
-        },
-        SPINDLE_OVERRIDE_RESET: {
-            title: 'Spindle/Laser Reset',
-            keys: '',
-            gamepadKeys: '',
-            keysName: 'Spindle/Laser Reset',
-            cmd: 'SPINDLE_OVERRIDE_RESET',
-            payload: { amount: 0 },
-            preventDefault: true,
-            isActive: true,
-            category: OVERRIDES_CATEGORY,
-            callback: this.shuttleControlFunctions.SPINDLE_OVERRIDE
         },
         VISUALIZER_VIEW_3D: {
             title: '3D / Isometric',
@@ -1577,15 +1428,12 @@ export default connect((store) => {
     const controllerType = get(store, 'controller.type');
     const activeState = get(store, 'controller.state.status.activeState');
     const alarmCode = get(store, 'controller.state.status.alarmCode');
-    const overrides = get(store, 'controller.state.status.ov', [0, 0, 0]);
+    const isFileLoaded = get(store, 'file.fileLoaded');
 
     const { activeVisualizer } = store.visualizer;
 
     const feedArray = [xMaxFeed, yMaxFeed, zMaxFeed];
     const accelArray = [xMaxAccel * 3600, yMaxAccel * 3600, zMaxAccel * 3600];
-
-    const ovF = overrides[0];
-    const ovS = overrides[2];
 
     return {
         feedArray,
@@ -1597,7 +1445,6 @@ export default connect((store) => {
         activeState,
         activeVisualizer,
         alarmCode,
-        ovF,
-        ovS
+        isFileLoaded
     };
 }, null, null, { forwardRef: true })(VisualizerWidget);

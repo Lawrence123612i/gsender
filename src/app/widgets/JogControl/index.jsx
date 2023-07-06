@@ -47,22 +47,26 @@ import Axes from './Axes';
 import ShuttleControl from './ShuttleControl';
 import JogHelper from './jogHelper';
 import {
+
     // Units
     IMPERIAL_UNITS,
     IMPERIAL_STEPS,
     METRIC_UNITS,
     METRIC_STEPS,
+
     // Workflow
     GRBL_ACTIVE_STATE_JOG,
     GRBL_ACTIVE_STATE_RUN,
     GRBL_ACTIVE_STATE_IDLE,
     WORKFLOW_STATE_IDLE,
-    //GRBL_ACTIVE_STATE_HOLD,
     WORKFLOW_STATE_RUNNING,
+    WORKFLOW_STATE_PAUSED,
+
     JOGGING_CATEGORY,
+
     AXIS_X,
     AXIS_Y,
-    AXIS_Z
+    AXIS_Z,
 } from '../../constants';
 import {
     MODAL_NONE,
@@ -1202,13 +1206,15 @@ class AxesWidget extends PureComponent {
     changeUnits(units) {
         const oldUnits = this.state.units;
         const { jog } = this.state;
-        let { zStep, xyStep } = jog;
+        let { zStep, xyStep, feedrate } = jog;
         if (oldUnits === METRIC_UNITS && units === IMPERIAL_UNITS) {
             zStep = mm2in(zStep).toFixed(3);
             xyStep = mm2in(xyStep).toFixed(3);
+            feedrate = mm2in(feedrate).toFixed(2);
         } else if (oldUnits === IMPERIAL_UNITS && units === METRIC_UNITS) {
             zStep = in2mm(zStep).toFixed(2);
             xyStep = in2mm(xyStep).toFixed(2);
+            feedrate = in2mm(feedrate).toFixed(0);
         }
 
         this.setState({
@@ -1216,7 +1222,8 @@ class AxesWidget extends PureComponent {
             jog: {
                 ...jog,
                 zStep: zStep,
-                xyStep: xyStep
+                xyStep: xyStep,
+                feedrate
             }
         });
     }
@@ -1291,7 +1298,7 @@ class AxesWidget extends PureComponent {
     }
 
     render() {
-        const { widgetId, machinePosition, workPosition, canJog, isSecondary } = this.props;
+        const { widgetId, machinePosition, workPosition, isSecondary } = this.props;
         const { minimized, isFullscreen } = this.state;
         const { units } = this.state;
         const isForkedWidget = widgetId.match(/\w+:[\w\-]+/);
@@ -1312,7 +1319,6 @@ class AxesWidget extends PureComponent {
             workPosition: mapValues(workPosition, (pos, axis) => {
                 return String(mapPositionToUnits(pos, units));
             }),
-            canJog,
             isSecondary
         };
         const actions = {
@@ -1354,7 +1360,7 @@ export default connect((store) => {
     const workPosition = get(store, 'controller.wpos');
     const machinePosition = get(store, 'controller.mpos');
     const workflow = get(store, 'controller.workflow');
-    const canJog = workflow.state === WORKFLOW_STATE_IDLE;
+    const canJog = [WORKFLOW_STATE_IDLE, WORKFLOW_STATE_PAUSED].includes(workflow.state);
     const isConnected = get(store, 'connection.isConnected');
     const activeState = get(state, 'status.activeState');
     return {
