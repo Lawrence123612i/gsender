@@ -208,8 +208,14 @@ export const USER_DATA_COLLECTION = {
     REJECTED: 'REJECTED',
 };
 
+export const OVERRIDE_VALUE_RANGES = {
+    MIN: 20,
+    MAX: 200
+};
+
 export const ROTARY_MODE_FIRMWARE_SETTINGS = {
     $101: '19.75308642',
+    $111: '8000.00',
     $21: '0'
 };
 
@@ -222,4 +228,9 @@ export const FILE_TYPE = {
     DEFAULT: 'DEFAULT',
     ROTARY: 'ROTARY',
     FOUR_AXIS: 'FOUR_AXIS'
+};
+
+export const STOCK_TURNING_METHOD = {
+    HALF_AND_HALF_SPIRALS: 'HALF_AND_HALF_SPIRALS',
+    FULL_SPIRALS: 'FULL_SPIRALS',
 };
