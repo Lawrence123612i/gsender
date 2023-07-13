@@ -24,7 +24,7 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import store from 'app/store';
-import TabbedWidget from 'app/components/TabbedWidget';
+// import TabbedWidget from 'app/components/TabbedWidget';
 import controller from 'app/lib/controller';
 import CoolantWidget from 'app/widgets/Coolant';
 import WidgetConfig from '../WidgetConfig';
@@ -39,6 +39,7 @@ import SpindleWidget from '../Spindle';
 import {
     MODAL_NONE,
 } from './constants';
+import Tabs from '../../components/Tabs/Tabs';
 
 
 class SecondaryFunctionality extends PureComponent {
@@ -196,29 +197,40 @@ class SecondaryFunctionality extends PureComponent {
         const actions = { ...this.actions };
 
         return (
-            <TabbedWidget fullscreen={isFullscreen}>
-                <TabbedWidget.Tabs tabs={tabs} activeTabIndex={selectedTab} onClick={actions.handleTabSelect} />
-                <TabbedWidget.Content>
-                    {
-                        tabs.map((tab, index) => {
-                            const active = index === selectedTab;
-                            return (
-                                <TabbedWidget.ChildComponent key={`${tab.widgetId}`} active={active}>
-                                    <tab.component
-                                        onFork={onFork}
-                                        onRemove={onRemove}
-                                        sortable={sortable}
-                                        widgetId={tab.widgetId}
-                                        embedded
-                                        active={active}
-                                        isMainWindow={true}
-                                    />
-                                </TabbedWidget.ChildComponent>
-                            );
-                        })
-                    }
-                </TabbedWidget.Content>
-            </TabbedWidget>
+            <Tabs
+                tabs={tabs}
+                activeTabIndex={selectedTab}
+                onClick={actions.handleTabSelect}
+                onFork={onFork}
+                onRemove={onRemove}
+                sortable={sortable}
+                embedded
+                isMainWindow={true}
+                fullscreen={isFullscreen}
+            />
+            // <TabbedWidget fullscreen={isFullscreen}>
+            //     <TabbedWidget.Tabs tabs={tabs} activeTabIndex={selectedTab} onClick={actions.handleTabSelect} />
+            //     <TabbedWidget.Content>
+            //         {
+            //             tabs.map((tab, index) => {
+            //                 const active = index === selectedTab;
+            //                 return (
+            //                     <TabbedWidget.ChildComponent key={`${tab.widgetId}`} active={active}>
+            //                         <tab.component
+            //                             onFork={onFork}
+            //                             onRemove={onRemove}
+            //                             sortable={sortable}
+            //                             widgetId={tab.widgetId}
+            //                             embedded
+            //                             active={active}
+            //                             isMainWindow={true}
+            //                         />
+            //                     </TabbedWidget.ChildComponent>
+            //                 );
+            //             })
+            //         }
+            //     </TabbedWidget.Content>
+            // </TabbedWidget>
         );
     }
 }
