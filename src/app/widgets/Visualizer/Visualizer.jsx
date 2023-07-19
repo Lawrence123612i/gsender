@@ -975,8 +975,8 @@ class Visualizer extends Component {
 
         { // Coordinate Grid
             const gridLine = new GridLine(
-                gridCount * gridSpacing,
-                gridCount * gridSpacing,
+                gridCount * gridSpacing * 2,
+                gridCount * gridSpacing * 2,
                 step,
                 currentTheme.get(GRID_PART) // grid
             );
@@ -1173,7 +1173,7 @@ class Visualizer extends Component {
         }
 
         { // Imperial Grid Line Numbers
-            const visible = objects.gridLineNumbers.visyarnible;
+            const visible = objects.gridLineNumbers.visible;
             const imperialGridLineNumbers = this.createGridLineNumbers(IMPERIAL_UNITS);
             imperialGridLineNumbers.name = 'ImperialGridLineNumbers';
             imperialGridLineNumbers.visible = visible && (units === IMPERIAL_UNITS);
