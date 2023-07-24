@@ -85,3 +85,7 @@
 .rc-tabs-nav-wrap {
 
 }
+
+.rc-tabs-content-holder {
+    position: fixed;
+}
