@@ -80,18 +80,12 @@ const Tabs = ({ borderless, fullscreen, tabs, activeTabIndex, onClick, onFork, o
                 tabBarStyle={{
                     backgroundColor: '#d1d5db',
                     position: 'relative',
-                    // display: 'block',
-                    // display: 'flex',
-                    // height: '1.9rem',
-                    // justifyContent: 'space-between',
-                    // flexDirection: 'row',
                     alignContent: 'center',
                     textAlign: 'center',
-                    // fontSize: '2rem'
-
-                    // &:before, &:after {
-                    //     content: 'none !important',
-                    // }
+                    maxWidth: '500px'
+                }}
+                style={{
+                    maxWidth: '500px'
                 }}
                 // [WidgetStyles.widgetHeader, styles.tabRow].join(' ')}
             />
