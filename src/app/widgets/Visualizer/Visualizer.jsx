@@ -1092,11 +1092,11 @@ class Visualizer extends Component {
 
         // WebGLRenderer
         this.renderer = new THREE.WebGLRenderer({
-            autoClearColor: true,
-            alpha: true
+            alpha: true,
+            antialias: true
         });
         this.renderer.shadowMap.enabled = true;
-        this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        this.renderer.shadowMap.type = THREE.BasicShadowMap;
         this.renderer.setClearColor(new THREE.Color(currentTheme.get(BACKGROUND_PART)), 1);
         this.renderer.setSize(width, height);
         this.renderer.clear();
@@ -1354,10 +1354,10 @@ class Visualizer extends Component {
 
         if (this.renderer && needUpdateScene) {
             this.renderer.render(this.scene, this.camera);
-            this.copyComposer.render();
+            /*this.copyComposer.render();
             this.fxaaComposer.render();
             this.renderBloom();
-            this.finalComposer.render();
+            this.finalComposer.render();*/
         }
     }
 

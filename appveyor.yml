@@ -4,7 +4,9 @@ version: "{build}-{branch}"
 branches:
   only:
     - master
+    - dev
     - /v\d+\.\d+\.\d+/
+    - /v\d+\.\d+\.\d+-EDGE/
 
 environment:
   matrix:
